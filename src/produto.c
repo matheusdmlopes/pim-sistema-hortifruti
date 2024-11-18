@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <produto.h>
+#include "produto.h"
 
 void cadastrarProdutos()
 {
@@ -9,7 +9,7 @@ void cadastrarProdutos()
     Produto produto;
     int i;
 
-    arquivo = fopen("dados.bin", "ab");
+    arquivo = fopen("data/dados.bin", "ab");
     if(arquivo == NULL) {
         perror("Erro ao abrir o arquivo");
         exit(1);
@@ -51,7 +51,7 @@ void consultarProdutoPeloId()
     Produto produto;
     int id_busca, encontrou = 0;
 
-    arquivo = fopen("dados.bin", "rb");
+    arquivo = fopen("data/dados.bin", "rb");
     if(arquivo == NULL) {
         perror("Erro ao abrir o arquivo");
         exit(1);
@@ -85,7 +85,7 @@ void consultarTodosProdutos ()
     FILE *arquivo;
     Produto produto;
 
-    arquivo = fopen("dados.bin", "rb");
+    arquivo = fopen("data/dados.bin", "rb");
 
     if(arquivo == NULL) {
         perror("Erro ao abrir o arquivo");
@@ -109,7 +109,7 @@ void editarProduto()
     Produto produto;
     int id_busca, encontrou = 0;
 
-    arquivo = fopen("dados.bin", "rb+");
+    arquivo = fopen("data/dados.bin", "rb+");
     if(arquivo == NULL) {
         perror("Erro ao abrir o arquivo");
         exit(1);
@@ -165,13 +165,13 @@ void excluirProduto()
     Produto produto;
     int id_busca, op, encontrou = 0, exclui = 0;
 
-    arquivo = fopen("dados.bin", "rb");
+    arquivo = fopen("data/dados.bin", "rb");
     if(arquivo == NULL) {
         perror("Erro ao abrir o arquivo");
         exit(1);
     }
 
-    novoArquivo = fopen("temp.bin", "wb");
+    novoArquivo = fopen("data/temp.bin", "wb");
     if(novoArquivo == NULL) {
         perror("Erro ao abrir o arquivo");
         fclose(arquivo);
@@ -209,20 +209,20 @@ void excluirProduto()
 
     if(encontrou == 0) {
         printf("\nNao ha registro com o valor pesquisado.\n");
-        remove("temp.bin");
+        remove("data/temp.bin");
     } else if(op == 1 && encontrou == 1) {
-        if(remove("dados.bin") != 0) {
+        if(remove("data/dados.bin") != 0) {
             perror("Erro ao remover o arquivo original");
             exit(1);
         }
 
-        if(rename("temp.bin", "dados.bin") != 0) {
+        if(rename("data/temp.bin", "data/dados.bin") != 0) {
             perror("Erro ao renomear o arquivo");
             exit(1);
         }
 
         printf("\n--- Registro excluido com sucesso ---\n");
     } else {
-        remove("temp.bin");
+        remove("data/temp.bin");
     }
 }
