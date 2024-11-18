@@ -1,13 +1,7 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
-typedef struct {
-    int id;
-    int quantidade;
-    double preco;
-    char nome[50];
-} Produto;
+#include <string.h>
+#include <produto.h>
 
 void cadastrarProdutos()
 {
@@ -51,7 +45,7 @@ void cadastrarProdutos()
     printf("-----------------------------------\n");
 }
 
-void consultarProdutos()
+void consultarProdutoPeloId()
 {
     FILE *arquivo;
     Produto produto;
@@ -86,7 +80,8 @@ void consultarProdutos()
     }
 }
 
-void consultarTodosProdutos () {
+void consultarTodosProdutos ()
+{
     FILE *arquivo;
     Produto produto;
 
@@ -108,7 +103,7 @@ void consultarTodosProdutos () {
     fclose(arquivo);
 }
 
-void editarProdutos()
+void editarProduto()
 {
     FILE *arquivo;
     Produto produto;
@@ -164,7 +159,8 @@ void editarProdutos()
 
 }
 
-void excluirProdutos() {
+void excluirProduto()
+{
     FILE *arquivo, *novoArquivo;
     Produto produto;
     int id_busca, op, encontrou = 0, exclui = 0;
@@ -215,7 +211,7 @@ void excluirProdutos() {
         printf("\nNao ha registro com o valor pesquisado.\n");
         remove("temp.bin");
     } else if(op == 1 && encontrou == 1) {
-        if(remove("dados.bin")!= 0) {
+        if(remove("dados.bin") != 0) {
             perror("Erro ao remover o arquivo original");
             exit(1);
         }
@@ -230,47 +226,3 @@ void excluirProdutos() {
         remove("temp.bin");
     }
 }
-
-int main()
-{
-    int opcao;
-
-    do {
-        printf("\n--- Sistema Hortifruti ---\n");
-        printf("1. Cadastrar Produto\n");
-        printf("2. Consultar Produto por ID\n");
-        printf("3. Consultar Todos os Produtos\n");
-        printf("4. Editar Produto\n");
-        printf("5. Excluir Produto\n");
-        printf("6. Sair\n");
-        printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
-        getchar();
-
-        switch(opcao) {
-            case 1:
-                cadastrarProdutos();
-                break;
-            case 2:
-                consultarProdutos();
-                break;
-            case 3:
-                consultarTodosProdutos();
-                break;
-            case 4:
-                editarProdutos();
-                break;
-            case 5:
-                excluirProdutos();
-                break;
-            case 6:
-                printf("Saindo do sistema...\n");
-                break;
-            default:
-                printf("Opcao invalida! Tente novamente.\n");
-        }
-    } while(opcao != 6);
-
-    return 0;
-}
-
