@@ -29,32 +29,11 @@
 *.so.*
 *.dylib
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
 # Debug files
 *.dSYM/
 *.su
 *.idb
 *.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# Ignorar arquivos de objeto
-
-*.o
 
 # Ignorar executáveis
 *.exe
@@ -68,4 +47,4 @@ dkms.conf
 !*/
 !*.c
 !*.h
-!*.md
+!data/.gitkeep
