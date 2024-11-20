@@ -5,6 +5,7 @@ typedef struct {
     int id;
     char cnpj[19];
     char nome[50];
+    char contato[60];
 } Fornecedor;
 
 void cadastrarFornecedor();

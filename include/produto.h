@@ -8,7 +8,7 @@ typedef struct {
     char nome[50];
 } Produto;
 
-void cadastrarProdutos();
+void cadastrarProduto();
 void consultarProdutoPeloId();
 void consultarTodosProdutos();
 void editarProduto();
