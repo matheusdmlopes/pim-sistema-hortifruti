@@ -11,7 +11,7 @@ int main()
 
     strcpy(senha, "UNIP");
 
-     printf("\n===================================\n");
+    printf("\n===================================\n");
     printf(" Bem-vindo ao Sistema Hortifruti\n");
     printf("===================================\n");
     printf("Por favor, insira a senha para acessar o sistema.\n");
