@@ -11,21 +11,34 @@ int main()
 {
     int opcaoPrincipal, opcaoProduto, opcaoFornecedor;
 
-    printf("\n===================================\n");
-    printf(" Bem-vindo ao Sistema Hortifruti\n");
-    printf("===================================\n");
+    desenharLinha(80, '=', ANSI_TEXT_GREEN);
+    exibirTitulo("Bem-vindo ao Sistema Hortifruti", 80, ANSI_TEXT_YELLOW);
+    desenharLinha(80, '=', ANSI_TEXT_GREEN);
 
 
     if(!autenticarUsuario()) {
         return 0;
     }
 
+
+
     do {
-        printf("\n--- Sistema Hortifruti ---\n");
-        printf("Escolha uma opcao:\n");
-        printf("1. Cadastro Geral de Produtos\n");
-        printf("2. Cadastro Geral de Fornecedores\n");
-        printf("3. Sair\n");
+        char *opcoesPrincipal[] = {
+            "Cadastro Geral de Produtos",
+            "Cadastro Geral de Fornecedores",
+            "Sair"
+        };
+        int numOpcoesPrincipal = 3;
+
+
+        desenharLinha(80, '=', ANSI_TEXT_GREEN);
+        exibirTitulo("Sistema Hortifruti", 80, ANSI_TEXT_YELLOW);
+        desenharLinha(80, '=', ANSI_TEXT_GREEN);
+
+        exibirTitulo("Menu Principal", 80, ANSI_TEXT_CYAN);
+
+
+        exibirMenu(opcoesPrincipal, numOpcoesPrincipal, ANSI_RESET);
         printf("Escolha uma opcao: ");
         scanf("%d", &opcaoPrincipal);
         getchar();
@@ -33,13 +46,25 @@ int main()
         switch(opcaoPrincipal) {
         case 1:
             do {
-                printf("\n--- Cadastro de Produtos ---\n");
-                printf("1. Cadastrar Produto\n");
-                printf("2. Consultar Produto por ID\n");
-                printf("3. Consultar Todos os Produtos\n");
-                printf("4. Editar Produto\n");
-                printf("5. Excluir Produto\n");
-                printf("6. Voltar ao Menu Principal\n");
+                char *opcoesProduto[] = {
+                    "Cadastrar Produto",
+                    "Consultar Produto por ID",
+                    "Consultar Todos os Produtos",
+                    "Editar Produto",
+                    "Excluir Produto",
+                    "Voltar ao Menu Principal"
+                };
+                int numOpcoesProduto = 6;
+
+                limparTela();
+
+                desenharLinha(80, '=', ANSI_TEXT_GREEN);
+                exibirTitulo("Sistema Hortifruti", 80, ANSI_TEXT_YELLOW);
+                desenharLinha(80, '=', ANSI_TEXT_GREEN);
+
+                exibirTitulo("Cadastro Geral de Produtos", 80, ANSI_TEXT_CYAN);
+
+                exibirMenu(opcoesProduto, numOpcoesProduto, ANSI_RESET);
                 printf("Escolha uma opcao: ");
                 scanf("%d", &opcaoProduto);
                 getchar();
@@ -61,7 +86,7 @@ int main()
                     excluirProduto();
                     break;
                 case 6:
-                    printf("Voltando ao menu principal...\n");
+                    limparTela();
                     break;
                 default:
                     printf("Opcao invalida! Tente novamente.\n");
@@ -71,13 +96,23 @@ int main()
 
         case 2:
             do {
-                printf("\n--- Cadastro de Fornecedores ---\n");
-                printf("1. Cadastrar Fornecedor\n");
-                printf("2. Consultar Fornecedor por ID\n");
-                printf("3. Consultar Todos os Fornecedores\n");
-                printf("4. Editar Fornecedor\n");
-                printf("5. Excluir Fornecedor\n");
-                printf("6. Voltar ao Menu Principal\n");
+                char *opcoesFornecedor[] = {
+                    "Cadastrar Fornecedor",
+                    "Consultar Fornecedor por ID",
+                    "Consultar Todos os Fornecedores",
+                    "Editar Fornecedor",
+                    "Excluir Fornecedor",
+                    "Voltar ao Menu Principal"
+                };
+                int numOpcoesFornecedor = 6;
+
+                limparTela();
+
+                desenharLinha(80, '=', ANSI_TEXT_GREEN);
+                exibirTitulo("Cadastro Geral de Fornecedores", 80, ANSI_TEXT_CYAN);
+                desenharLinha(80, '=', ANSI_TEXT_GREEN);
+
+                exibirMenu(opcoesFornecedor, numOpcoesFornecedor, ANSI_RESET);
                 printf("Escolha uma opcao: ");
                 scanf("%d", &opcaoFornecedor);
                 getchar();
@@ -99,7 +134,7 @@ int main()
                     excluirFornecedor();
                     break;
                 case 6:
-                    printf("Voltando ao menu principal...\n");
+                    limparTela();
                     break;
                 default:
                     printf("Opcao invalida! Tente novamente.\n");

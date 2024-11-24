@@ -16,8 +16,12 @@
 #define ANSI_BG_MAGENTA "\x1b[45m"
 #define ANSI_BG_CYAN "\x1b[46m"
 
+#define ANSI_BOLD "\x1b[1m"
+#define ANSI_UNDERLINE "\x1b[4m"
+
 void setTextColor(const char* color);
 void setBackgroundColor(const char* color);
+void setTextStyle(const char* style);
 void resetColors();
 
 #endif // CORES_H

@@ -17,6 +17,7 @@ void desenharLinha(int largura, char caractere, const char *cor) {
 void exibirTitulo(const char *titulo, int larguraTela, const char *cor) {
     int espacos = (larguraTela - strlen(titulo)) / 2;
     setTextColor(cor);
+    setTextStyle(ANSI_BOLD);
     for (int i = 0; i < espacos; i++) {
         printf(" ");
     }
@@ -31,4 +32,8 @@ void exibirMenu(const char *opcoes[], int numOpcoes, const char *cor) {
         printf("%d. %s\n", i + 1, opcoes[i]);
     }
     resetColors();
+}
+
+void limparTela() {
+    printf("\033[H\033[J");
 }
