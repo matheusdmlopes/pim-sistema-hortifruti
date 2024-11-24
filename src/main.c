@@ -3,44 +3,22 @@
 #include <stdlib.h>
 #include <produto.h>
 #include <fornecedor.h>
+#include <autenticacao.h>
+#include <cores.h>
+#include <interface.h>
 
 int main()
 {
     int opcaoPrincipal, opcaoProduto, opcaoFornecedor;
-    char senha[5], senhaDigitada[20];
-
-    strcpy(senha, "UNIP");
 
     printf("\n===================================\n");
     printf(" Bem-vindo ao Sistema Hortifruti\n");
     printf("===================================\n");
-    printf("Por favor, insira a senha para acessar o sistema.\n");
-    printf("Você pode digitar 'sair' para encerrar o programa.\n");
 
-    do {
-        printf("Digite a senha: ");
-        fgets(senhaDigitada, sizeof(senhaDigitada), stdin);
 
-        if (strchr(senhaDigitada, '\n') == NULL) {
-            int c;
-            while ((c = getchar()) != '\n' && c != EOF);
-        }
-
-        senhaDigitada[strcspn(senhaDigitada, "\n")] = '\0';
-
-        if (strcmp(senhaDigitada, "sair") == 0 || strcmp(senhaDigitada, "SAIR") == 0) {
-            printf("\nEncerrando o sistema... Até mais!\n");
-            return 0;
-        }
-
-        if (strlen(senhaDigitada) != strlen(senha) || strcmp(senha, senhaDigitada) != 0) {
-            printf("\nAcesso negado. Tente novamente ou digite 'sair' para encerrar.\n");
-        } else {
-            printf("\nAcesso autorizado.\n");
-            break;
-        }
-
-    } while (1);
+    if(!autenticarUsuario()) {
+        return 0;
+    }
 
     do {
         printf("\n--- Sistema Hortifruti ---\n");
