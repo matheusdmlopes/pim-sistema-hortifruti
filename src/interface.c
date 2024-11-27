@@ -35,5 +35,9 @@ void exibirMenu(const char *opcoes[], int numOpcoes, const char *cor) {
 }
 
 void limparTela() {
-    printf("\033[H\033[J");
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
 }

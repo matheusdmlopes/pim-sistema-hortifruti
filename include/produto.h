@@ -12,6 +12,8 @@ void cadastrarProduto();
 void consultarProdutoPeloId();
 void consultarTodosProdutos();
 void editarProduto();
+void alterarEstoqueProduto();
 void excluirProduto();
+int exibirCatalogoProdutos();
 
 #endif // PRODUTO_H

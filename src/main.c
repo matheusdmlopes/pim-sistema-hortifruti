@@ -9,7 +9,7 @@
 
 int main()
 {
-    int opcaoPrincipal, opcaoProduto, opcaoFornecedor;
+    int opcaoPrincipal, opcaoProduto, opcaoFornecedor, opcaoFluxoCaixa;
 
     desenharLinha(80, '=', ANSI_TEXT_GREEN);
     exibirTitulo("Bem-vindo ao Sistema Hortifruti", 80, ANSI_TEXT_YELLOW);
@@ -20,16 +20,16 @@ int main()
         return 0;
     }
 
-
-
     do {
         char *opcoesPrincipal[] = {
             "Cadastro Geral de Produtos",
             "Cadastro Geral de Fornecedores",
+            "Fluxo de Caixa",
             "Sair"
         };
-        int numOpcoesPrincipal = 3;
+        int numOpcoesPrincipal = 4;
 
+        limparTela();
 
         desenharLinha(80, '=', ANSI_TEXT_GREEN);
         exibirTitulo("Sistema Hortifruti", 80, ANSI_TEXT_YELLOW);
@@ -51,10 +51,11 @@ int main()
                     "Consultar Produto por ID",
                     "Consultar Todos os Produtos",
                     "Editar Produto",
+                    "Alterar Estoque de Produto",
                     "Excluir Produto",
                     "Voltar ao Menu Principal"
                 };
-                int numOpcoesProduto = 6;
+                int numOpcoesProduto = 7;
 
                 limparTela();
 
@@ -83,15 +84,18 @@ int main()
                     editarProduto();
                     break;
                 case 5:
-                    excluirProduto();
+                    alterarEstoqueProduto();
                     break;
                 case 6:
+                    excluirProduto();
+                    break;
+                case 7:
                     limparTela();
                     break;
                 default:
                     printf("Opcao invalida! Tente novamente.\n");
                 }
-            } while(opcaoProduto != 6);
+            } while(opcaoProduto != 7);
             break;
 
         case 2:
@@ -109,8 +113,10 @@ int main()
                 limparTela();
 
                 desenharLinha(80, '=', ANSI_TEXT_GREEN);
-                exibirTitulo("Cadastro Geral de Fornecedores", 80, ANSI_TEXT_CYAN);
+                exibirTitulo("Sistema Hortifruti", 80, ANSI_TEXT_YELLOW);
                 desenharLinha(80, '=', ANSI_TEXT_GREEN);
+
+                exibirTitulo("Cadastro Geral de Fornecedores", 80, ANSI_TEXT_CYAN);
 
                 exibirMenu(opcoesFornecedor, numOpcoesFornecedor, ANSI_RESET);
                 printf("Escolha uma opcao: ");
@@ -141,15 +147,64 @@ int main()
                 }
             } while(opcaoFornecedor != 6);
             break;
-
         case 3:
+            do {
+                char *opcoesFluxoCaixa[] = {
+                    "Registrar Entrada",
+                    "Registrar Saída",
+                    "Venda de Produto",
+                    "Remover Transação",
+                    "Exibir Relatório do Caixa",
+                    "Voltar ao Menu Principal"
+                };
+                int numOpcoesFluxoCaixa = 6;
+
+                limparTela();
+
+                desenharLinha(80, '=', ANSI_TEXT_GREEN);
+                exibirTitulo("Sistema Hortifruti", 80, ANSI_TEXT_YELLOW);
+                desenharLinha(80, '=', ANSI_TEXT_GREEN);
+
+                exibirTitulo("Fluxo de Caixa", 80, ANSI_TEXT_CYAN);
+                exibirMenu(opcoesFluxoCaixa, numOpcoesFluxoCaixa, ANSI_RESET);
+                printf("Escolha uma opcao: ");
+                scanf("%d", &opcaoFluxoCaixa);
+                getchar();
+
+                switch(opcaoFluxoCaixa) {
+                case 1:
+                    registrarTransacaoMenu("Entrada");
+                    break;
+                case 2:
+                    registrarTransacaoMenu("Saida");
+                    break;
+                case 3:
+                    simularVendaProduto();
+                    break;
+                case 4:
+                    removerTransacao();
+                    break;
+                case 5:
+                    exibirFluxoCaixa();
+                    break;
+                case 6:
+                    limparTela();
+                    break;
+                default:
+                    printf("Opcao invalida! Tente novamente.\n");
+                }
+
+            } while(opcaoFluxoCaixa != 6);
+            break;
+
+        case 4:
             printf("Encerrando o sistema... Até mais!\n");
             break;
 
         default:
             printf("Opcao invalida! Tente novamente.\n");
         }
-    } while(opcaoPrincipal != 3);
+    } while(opcaoPrincipal != 4);
 
     return 0;
 }
