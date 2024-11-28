@@ -1,50 +1,16 @@
-# Prerequisites
-*
-*.d
-
-# Object files
+# Ignorar binários e objetos compilados
+/bin/
+/obj/
 *.o
-*.ko
-*.obj
-*.elf
 
-# Linker output
-*.ilk
-*.map
-*.exp
+# Ignorar arquivos temporários e caches da IDE
+*.depend
+*.layout
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Ignorar executáveis
+# Ignorar arquivos executáveis gerados
 *.exe
 *.out
-*.a
-*.so
 
-# Ignorar diretórios de compilação
-/build/
-
-!*/
-!*.c
-!*.h
-!data/.gitkeep
+# Ignorar diretórios temporários
+*.tmp
+*.temp
