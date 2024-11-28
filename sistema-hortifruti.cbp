@@ -13,7 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add directory="/home/matheusdemarcolopes/area_de_trabalho/projetos individuais/pim-sistema-hortifruti/include" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
