@@ -36,6 +36,7 @@ int main()
         desenharLinha(80, '=', ANSI_TEXT_GREEN);
 
         exibirTitulo("Menu Principal", 80, ANSI_TEXT_CYAN);
+        desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
 
         exibirMenu(opcoesPrincipal, numOpcoesPrincipal, ANSI_RESET);
@@ -64,6 +65,7 @@ int main()
                 desenharLinha(80, '=', ANSI_TEXT_GREEN);
 
                 exibirTitulo("Cadastro Geral de Produtos", 80, ANSI_TEXT_CYAN);
+                desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
                 exibirMenu(opcoesProduto, numOpcoesProduto, ANSI_RESET);
                 printf("Escolha uma opcao: ");
@@ -117,6 +119,7 @@ int main()
                 desenharLinha(80, '=', ANSI_TEXT_GREEN);
 
                 exibirTitulo("Cadastro Geral de Fornecedores", 80, ANSI_TEXT_CYAN);
+                desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
                 exibirMenu(opcoesFornecedor, numOpcoesFornecedor, ANSI_RESET);
                 printf("Escolha uma opcao: ");
@@ -166,6 +169,8 @@ int main()
                 desenharLinha(80, '=', ANSI_TEXT_GREEN);
 
                 exibirTitulo("Fluxo de Caixa", 80, ANSI_TEXT_CYAN);
+                desenharLinha(80, '-', ANSI_TEXT_GREEN);
+
                 exibirMenu(opcoesFluxoCaixa, numOpcoesFluxoCaixa, ANSI_RESET);
                 printf("Escolha uma opcao: ");
                 scanf("%d", &opcaoFluxoCaixa);

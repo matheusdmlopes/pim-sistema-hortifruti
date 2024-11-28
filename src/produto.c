@@ -4,6 +4,7 @@
 #include <produto.h>
 #include <interface.h>
 #include <cores.h>
+#include <fornecedor.h>
 
 void cadastrarProduto()
 {
@@ -32,6 +33,7 @@ void cadastrarProduto()
     desenharLinha(80, '=', ANSI_TEXT_GREEN);
 
     exibirTitulo("Cadastro de Novo Produto", 80, ANSI_TEXT_CYAN);
+    desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
     produto.id = ultimoId + 1;
 
@@ -49,6 +51,38 @@ void cadastrarProduto()
 
     getchar();
 
+    listarFornecedores();
+    printf("Digite o ID do fornecedor para este produto: ");
+    scanf("%d", &produto.fornecedorId);
+    getchar();
+
+    FILE *arquivoFornecedor = fopen("data/fornecedores.bin", "rb");
+    if (arquivoFornecedor == NULL) {
+        perror("Erro ao abrir o arquivo de fornecedores");
+        fclose(arquivo);
+        exit(1);
+    }
+
+    Fornecedor fornecedor;
+    int fornecedorValido = 0;
+    while (fread(&fornecedor, sizeof(Fornecedor), 1, arquivoFornecedor)) {
+        if (fornecedor.id == produto.fornecedorId) {
+            fornecedorValido = 1;
+            break;
+        }
+    }
+    fclose(arquivoFornecedor);
+
+    if (!fornecedorValido) {
+        desenharLinha(80, '=', ANSI_TEXT_RED);
+        exibirTitulo("Fornecedor inválido. Produto não cadastrado.", 80, ANSI_TEXT_RED);
+        desenharLinha(80, '=', ANSI_TEXT_RED);
+        fclose(arquivo);
+        printf("\nPressione Enter para voltar ao menu.");
+        getchar();
+        return;
+    }
+
     fwrite(&produto, sizeof(Produto), 1, arquivo);
 
     fclose(arquivo);
@@ -59,8 +93,9 @@ void cadastrarProduto()
 
     printf("ID: %d\n", produto.id);
     printf("Nome: %s\n", produto.nome);
-    printf("Quantidade: %d\n", produto.quantidade);
-    printf("Preco: %.2lf\n", produto.preco);
+    printf("Quantidade: %d kg\n", produto.quantidade);
+    printf("Preco: R$%.2lf\n", produto.preco);
+    printf("Fornecedor ID: %d\n", produto.fornecedorId);
 
     desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
@@ -88,6 +123,12 @@ void consultarProdutoPeloId()
 
     exibirTitulo("Consulta de Produto por ID", 80, ANSI_TEXT_CYAN);
 
+    if (!exibirCatalogoProdutos()) {
+        printf("\nPressione Enter para voltar ao menu.");
+        getchar();
+        return;
+    }
+
     printf("\nDigite o ID para pesquisa: ");
     scanf("%d", &id_busca);
     getchar();
@@ -102,8 +143,8 @@ void consultarProdutoPeloId()
 
             printf("ID: %d\n", produto.id);
             printf("Nome: %s\n", produto.nome);
-            printf("Quantidade: %d\n", produto.quantidade);
-            printf("Preco: %.2lf\n", produto.preco);
+            printf("Quantidade: %d kg\n", produto.quantidade);
+            printf("Preco: R$%.2lf\n", produto.preco);
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
             break;
         }
@@ -144,12 +185,30 @@ void consultarTodosProdutos ()
     desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
     while(fread(&produto, sizeof(Produto), 1, arquivo)) {
+        encontrou = 1;
         printf("ID: %d\n", produto.id);
         printf("Nome: %s\n", produto.nome);
-        printf("Quantidade: %d\n", produto.quantidade);
-        printf("Preco: %.2lf\n", produto.preco);
+        printf("Quantidade: %d kg\n", produto.quantidade);
+        printf("Preco: R$%.2lf\n", produto.preco);
+
+        FILE *arquivoFornecedor = fopen("data/fornecedores.bin", "rb");
+        if (arquivoFornecedor == NULL) {
+            perror("Erro ao abrir o arquivo de fornecedores");
+            fclose(arquivo);
+            return;
+        }
+
+        Fornecedor fornecedor;
+        while (fread(&fornecedor, sizeof(Fornecedor), 1, arquivoFornecedor)) {
+            if (fornecedor.id == produto.fornecedorId) {
+                printf("Fornecedor: %s\n", fornecedor.nome);
+                break;
+            }
+        }
+        fclose(arquivoFornecedor);
+
         desenharLinha(80, '-', ANSI_TEXT_GREEN);
-        encontrou = 1;
+
     }
     fclose(arquivo);
 
@@ -181,6 +240,12 @@ void editarProduto()
 
     exibirTitulo("Editar Produto", 80, ANSI_TEXT_CYAN);
 
+    if (!exibirCatalogoProdutos()) {
+        printf("\nPressione Enter para voltar ao menu.");
+        getchar();
+        return;
+    }
+
     printf("\nDigite o ID para pesquisa: ");
     scanf("%d", &id_busca);
     getchar();
@@ -194,8 +259,8 @@ void editarProduto()
 
             printf("ID: %d\n", produto.id);
             printf("Nome: %s\n", produto.nome);
-            printf("Quantidade: %d\n", produto.quantidade);
-            printf("Preco: %.2lf\n", produto.preco);
+            printf("Quantidade: %d kg\n", produto.quantidade);
+            printf("Preco: R$%.2lf\n", produto.preco);
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
             printf("\nDigite o novo nome: ");
@@ -218,8 +283,8 @@ void editarProduto()
 
             printf("ID: %d\n", produto.id);
             printf("Nome: %s\n", produto.nome);
-            printf("Quantidade: %d\n", produto.quantidade);
-            printf("Preco: %.2lf\n", produto.preco);
+            printf("Quantidade: %d kg\n", produto.quantidade);
+            printf("Preco: R$%.2lf\n", produto.preco);
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
             break;
         }
@@ -256,6 +321,12 @@ void alterarEstoqueProduto()
 
     exibirTitulo("Alterar Estoque de Produto", 80, ANSI_TEXT_CYAN);
 
+    if (!exibirCatalogoProdutos()) {
+        printf("\nPressione Enter para voltar ao menu.");
+        getchar();
+        return;
+    }
+
     printf("\nDigite o ID do produto para alterar o estoque: ");
     scanf("%d", &id_busca);
     getchar();
@@ -270,8 +341,8 @@ void alterarEstoqueProduto()
 
             printf("ID: %d\n", produto.id);
             printf("Nome: %s\n", produto.nome);
-            printf("Quantidade Atual: %d\n", produto.quantidade);
-            printf("Preco: %.2lf\n", produto.preco);
+            printf("Quantidade Atual: %d kg\n", produto.quantidade);
+            printf("Preco: R$%.2lf\n", produto.preco);
 
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
@@ -288,7 +359,7 @@ void alterarEstoqueProduto()
 
             printf("ID: %d\n", produto.id);
             printf("Nome: %s\n", produto.nome);
-            printf("Nova Quantidade: %d\n", produto.quantidade);
+            printf("Nova Quantidade: %d kg\n", produto.quantidade);
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
             break;
@@ -334,6 +405,12 @@ void excluirProduto()
 
     exibirTitulo("Excluir Produto", 80, ANSI_TEXT_CYAN);
 
+    if (!exibirCatalogoProdutos()) {
+        printf("\nPressione Enter para voltar ao menu.");
+        getchar();
+        return;
+    }
+
     printf("\nDigite o ID do registro para exclusao: ");
     scanf("%d", &id_busca);
     getchar();
@@ -348,8 +425,8 @@ void excluirProduto()
 
             printf("ID: %d\n", produto.id);
             printf("Nome: %s\n", produto.nome);
-            printf("Quantidade: %d\n", produto.quantidade);
-            printf("Preco: %.2lf\n", produto.preco);
+            printf("Quantidade: %d kg\n", produto.quantidade);
+            printf("Preco: R$%.2lf\n", produto.preco);
 
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
@@ -415,8 +492,8 @@ int exibirCatalogoProdutos() {
         encontrouProdutos = 1;
         printf("ID: %d\n", produto.id);
         printf("Nome: %s\n", produto.nome);
-        printf("Quantidade em Estoque: %d\n", produto.quantidade);
-        printf("Preço Unitário: %.2lf\n", produto.preco);
+        printf("Quantidade em Estoque: %d kg\n", produto.quantidade);
+        printf("Preço Unitário: R$%.2lf\n", produto.preco);
         desenharLinha(80, '-', ANSI_TEXT_GREEN);
     }
 

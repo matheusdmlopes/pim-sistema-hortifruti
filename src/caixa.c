@@ -42,15 +42,15 @@ void registrarTransacaoMenu(const char* tipo)
 
 void registrarEntrada(double valor, const char *descricao)
 {
-    registrarTransacao("Entrada", valor, 0, descricao);
+    registrarTransacao("Entrada", valor, 0, descricao, "");
 }
 
 void registrarSaida(double valor, const char *descricao)
 {
-    registrarTransacao("Saída", valor, 0, descricao);
+    registrarTransacao("Saída", valor, 0, descricao, "");
 }
 
-void registrarTransacao(const char *tipo, double valor, int quantidade, const char *descricao)
+void registrarTransacao(const char *tipo, double valor, int quantidade, const char *descricao, const char *formaPagamento)
 {
     FILE *arquivo;
     Transacao transacao;
@@ -72,6 +72,7 @@ void registrarTransacao(const char *tipo, double valor, int quantidade, const ch
     transacao.valor = valor;
     transacao.quantidade = quantidade;
     strcpy(transacao.descricao, descricao);
+    strcpy(transacao.formaPagamento, formaPagamento);
     snprintf(transacao.data, sizeof(transacao.data), "%02d/%02d/%04d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
 
     fwrite(&transacao, sizeof(Transacao), 1, arquivo);
@@ -86,6 +87,10 @@ void exibirFluxoCaixa()
     Transacao transacao;
     double saldo = 0.0;
     int encontrou = 0;
+    int idMaisVendido, quantidadeMaisVendida;
+    char nomeMaisVendido[100];
+
+    obterProdutoMaisVendido(&idMaisVendido, nomeMaisVendido, &quantidadeMaisVendida);
 
     arquivo = fopen("data/caixa.bin", "rb");
     if (arquivo == NULL) {
@@ -102,6 +107,11 @@ void exibirFluxoCaixa()
     exibirTitulo("Relatório do Caixa", 80, ANSI_TEXT_CYAN);
     desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
+    if (quantidadeMaisVendida > 0) {
+        printf("Produto mais vendido: %s (ID: %d), Quantidade Vendida: %d\n", nomeMaisVendido, idMaisVendido, quantidadeMaisVendida);
+        desenharLinha(80, '-', ANSI_TEXT_GREEN);
+    }
+
     while (fread(&transacao, sizeof(Transacao), 1, arquivo)) {
 
         printf("ID: %d\n", transacao.id);
@@ -111,10 +121,14 @@ void exibirFluxoCaixa()
 
         if (transacao.quantidade > 0) {
             double valorUnitario = transacao.valor / transacao.quantidade;
-            printf("Valor Unitário: %.2lf\n", valorUnitario);
+            printf("Valor Unitário: R$%.2lf\n", valorUnitario);
             printf("Quantidade: %d\n", transacao.quantidade);
+            printf("Valor total: R$%.2lf\n", transacao.valor);
+            if (strlen(transacao.formaPagamento) > 0) {
+                printf("Forma de Pagamento: %s\n", transacao.formaPagamento);
+            }
         } else {
-            printf("Valor: %.2lf\n", transacao.valor);
+            printf("Valor: R$%.2lf\n", transacao.valor);
         }
 
         desenharLinha(80, '-', ANSI_TEXT_GREEN);
@@ -168,13 +182,24 @@ void simularVendaProduto()
     printf("Digite o ID do produto a ser vendido: ");
     scanf("%d", &id);
     getchar();
-    printf("Digite a quantidade a ser vendida: ");
-    scanf("%d", &quantidadeVendida);
-    getchar();
 
     while (fread(&produto, sizeof(Produto), 1, arquivo)) {
         if (produto.id == id) {
             encontrou = 1;
+
+            desenharLinha(80, '=', ANSI_TEXT_GREEN);
+            exibirTitulo("Produto Selecionado", 80, ANSI_TEXT_GREEN);
+            desenharLinha(80, '=', ANSI_TEXT_GREEN);
+
+            printf("ID: %d\n", produto.id);
+            printf("Nome: %s\n", produto.nome);
+            printf("Quantidade: %d kg\n", produto.quantidade);
+            printf("Preco: R$%.2lf\n", produto.preco);
+            desenharLinha(80, '-', ANSI_TEXT_GREEN);
+
+            printf("Digite a quantidade a ser vendida: ");
+            scanf("%d", &quantidadeVendida);
+            getchar();
             if (produto.quantidade < quantidadeVendida) {
                 desenharLinha(80, '=', ANSI_TEXT_RED);
                 printf("Quantidade insuficiente em estoque para a venda.\n");
@@ -185,6 +210,38 @@ void simularVendaProduto()
                 return;
             }
 
+            int opcaoPagamento;
+            char formaPagamento[20];
+
+            do {
+                printf("\nEscolha a forma de pagamento:\n");
+                printf("1. Dinheiro\n");
+                printf("2. Cartão de Crédito\n");
+                printf("3. Cartão de Débito\n");
+                printf("4. PIX\n");
+                printf("Escolha uma opção: ");
+                scanf("%d", &opcaoPagamento);
+                getchar();
+
+                switch (opcaoPagamento) {
+                case 1:
+                    strcpy(formaPagamento, "Dinheiro");
+                    break;
+                case 2:
+                    strcpy(formaPagamento, "Cartão de Crédito");
+                    break;
+                case 3:
+                    strcpy(formaPagamento, "Cartão de Débito");
+                    break;
+                case 4:
+                    strcpy(formaPagamento, "PIX");
+                    break;
+                default:
+                    printf("Opção inválida! Tente novamente.\n");
+                }
+            } while (opcaoPagamento < 1 || opcaoPagamento > 4);
+
+
             produto.quantidade -= quantidadeVendida;
 
             fseek(arquivo, -(long)sizeof(Produto), SEEK_CUR);
@@ -193,7 +250,7 @@ void simularVendaProduto()
             double valorTotal = produto.preco * quantidadeVendida;
             char descricao[100];
             snprintf(descricao, sizeof(descricao), "Venda do produto '%s' (ID: %d)", produto.nome, produto.id);
-            registrarTransacao("Entrada", valorTotal, quantidadeVendida, descricao);
+            registrarTransacao("Entrada", valorTotal, quantidadeVendida, descricao, formaPagamento);
 
             desenharLinha(80, '=', ANSI_TEXT_GREEN);
             exibirTitulo("Venda realizada com sucesso!", 80, ANSI_TEXT_GREEN);
@@ -225,13 +282,6 @@ void removerTransacao()
         exit(1);
     }
 
-    tempArquivo = fopen("data/temp_caixa.bin", "wb");
-    if (tempArquivo == NULL) {
-        perror("Erro ao criar arquivo temporário");
-        fclose(arquivo);
-        exit(1);
-    }
-
     limparTela();
 
     desenharLinha(80, '=', ANSI_TEXT_GREEN);
@@ -241,9 +291,47 @@ void removerTransacao()
     exibirTitulo("Remover Transação do Fluxo de Caixa", 80, ANSI_TEXT_CYAN);
     desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
+    int encontrouTransacao = 0;
+    while (fread(&transacao, sizeof(Transacao), 1, arquivo)) {
+        encontrouTransacao = 1;
+        printf("ID: %d\n", transacao.id);
+        printf("Data: %s\n", transacao.data);
+        printf("Tipo: %s\n", transacao.tipo);
+        printf("Descrição: %s\n", transacao.descricao);
+
+        if (transacao.quantidade > 0) {
+            double valorUnitario = transacao.valor / transacao.quantidade;
+            printf("Valor Unitário: R$%.2lf\n", valorUnitario);
+            printf("Quantidade: %d\n", transacao.quantidade);
+            printf("Valor total: R$%.2lf\n", transacao.valor);
+            if (strlen(transacao.formaPagamento) > 0) {
+                printf("Forma de Pagamento: %s\n", transacao.formaPagamento);
+            }
+        } else {
+            printf("Valor: R$%.2lf\n", transacao.valor);
+        }
+
+        desenharLinha(80, '-', ANSI_TEXT_GREEN);
+    }
+    fclose(arquivo);
+
+    if (!encontrouTransacao) {
+        exibirTitulo("Nenhuma transação registrada no momento.", 80, ANSI_TEXT_RED);
+        printf("\nPressione Enter para voltar ao menu.");
+        getchar();
+        return;
+    }
+
     printf("Digite o ID da transação que deseja remover: ");
     scanf("%d", &id);
     getchar();
+
+    arquivo = fopen("data/caixa.bin", "rb");
+    tempArquivo = fopen("data/temp_caixa.bin", "wb");
+    if (arquivo == NULL || tempArquivo == NULL) {
+        perror("Erro ao manipular arquivos");
+        exit(1);
+    }
 
     while (fread(&transacao, sizeof(Transacao), 1, arquivo)) {
         if (transacao.id == id) {
@@ -279,4 +367,42 @@ void removerTransacao()
 
     printf("\nPressione Enter para voltar ao menu.");
     getchar();
+}
+
+void obterProdutoMaisVendido(int *idMaisVendido, char *nomeMaisVendido, int *quantidadeMaisVendida)
+{
+    FILE *arquivo;
+    Transacao transacao;
+    int quantidades[1000] = {0};
+    char nomes[1000][100] = {""};
+
+    arquivo = fopen("data/caixa.bin", "rb");
+    if (arquivo == NULL) {
+        perror("Erro ao abrir o arquivo de fluxo de caixa");
+        exit(1);
+    }
+
+    while (fread(&transacao, sizeof(Transacao), 1, arquivo)) {
+        if (strcmp(transacao.tipo, "Entrada") == 0 && strstr(transacao.descricao, "Venda do produto") != NULL) {
+            int idProduto;
+            char nomeProduto[100];
+
+            sscanf(transacao.descricao, "Venda do produto '%99[^']' (ID: %d)", nomeProduto, &idProduto);
+
+            quantidades[idProduto] += transacao.quantidade;
+
+            strcpy(nomes[idProduto], nomeProduto);
+        }
+    }
+
+    fclose(arquivo);
+
+    *quantidadeMaisVendida = 0;
+    for (int i = 0; i < 1000; i++) {
+        if (quantidades[i] > *quantidadeMaisVendida) {
+            *quantidadeMaisVendida = quantidades[i];
+            *idMaisVendido = i;
+            strcpy(nomeMaisVendido, nomes[i]);
+        }
+    }
 }

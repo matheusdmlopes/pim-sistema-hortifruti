@@ -6,6 +6,7 @@ typedef struct {
     int quantidade;
     double preco;
     char nome[50];
+    int fornecedorId;
 } Produto;
 
 void cadastrarProduto();

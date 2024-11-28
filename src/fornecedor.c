@@ -33,6 +33,7 @@ void cadastrarFornecedor()
     desenharLinha(80, '=', ANSI_TEXT_GREEN);
 
     exibirTitulo("Cadastro de Novo Fornecedor", 80, ANSI_TEXT_CYAN);
+    desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
     fornecedor.id = ultimoId + 1;
 
@@ -50,6 +51,10 @@ void cadastrarFornecedor()
     fgets(fornecedor.nome, sizeof(fornecedor.nome), stdin);
     fornecedor.nome[strcspn(fornecedor.nome, "\n")] = '\0';
 
+    printf("Digite a categoria do fornecedor: ");
+    fgets(fornecedor.categoria, sizeof(fornecedor.categoria), stdin);
+    fornecedor.categoria[strcspn(fornecedor.categoria, "\n")] = '\0';
+
     printf("Digite o contato (email ou telefone): ");
     fgets(fornecedor.contato, sizeof(fornecedor.contato), stdin);
     fornecedor.contato[strcspn(fornecedor.contato, "\n")] = '\0';
@@ -65,6 +70,7 @@ void cadastrarFornecedor()
     printf("ID: %d\n", fornecedor.id);
     printf("CNPJ: %s\n", fornecedor.cnpj);
     printf("Nome: %s\n", fornecedor.nome);
+    printf("Categoria: %s\n", fornecedor.categoria);
     printf("Contato: %s\n", fornecedor.contato);
 
     desenharLinha(80, '-', ANSI_TEXT_GREEN);
@@ -93,6 +99,12 @@ void consultarFornecedorPeloId()
 
     exibirTitulo("Consulta de Fornecedor por ID", 80, ANSI_TEXT_CYAN);
 
+    if (!listarFornecedores()) {
+        printf("\nPressione Enter para voltar ao menu.");
+        getchar();
+        return;
+    }
+
     printf("\nDigite o ID para pesquisa: ");
     scanf("%d", &id_busca);
     getchar();
@@ -108,6 +120,7 @@ void consultarFornecedorPeloId()
             printf("ID: %d\n", fornecedor.id);
             printf("CNPJ: %s\n", fornecedor.cnpj);
             printf("Nome: %s\n", fornecedor.nome);
+            printf("Categoria: %s\n", fornecedor.categoria);
             printf("Contato: %s\n", fornecedor.contato);
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
             break;
@@ -152,6 +165,7 @@ void consultarTodosFornecedores()
         printf("ID: %d\n", fornecedor.id);
         printf("CNPJ: %s\n", fornecedor.cnpj);
         printf("Nome: %s\n", fornecedor.nome);
+        printf("Categoria: %s\n", fornecedor.categoria);
         printf("Contato: %s\n", fornecedor.contato);
         desenharLinha(80, '-', ANSI_TEXT_GREEN);
         encontrou = 1;
@@ -186,6 +200,12 @@ void editarFornecedor()
 
     exibirTitulo("Editar Fornecedor", 80, ANSI_TEXT_CYAN);
 
+    if (!listarFornecedores()) {
+        printf("\nPressione Enter para voltar ao menu.");
+        getchar();
+        return;
+    }
+
     printf("\nDigite o ID para pesquisa: ");
     scanf("%d", &id_busca);
     getchar();
@@ -200,6 +220,7 @@ void editarFornecedor()
             printf("ID: %d\n", fornecedor.id);
             printf("CNPJ: %s\n", fornecedor.cnpj);
             printf("Nome: %s\n", fornecedor.nome);
+            printf("Categoria: %s\n", fornecedor.categoria);
             printf("Contato: %s\n", fornecedor.contato);
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
 
@@ -215,6 +236,10 @@ void editarFornecedor()
             fgets(fornecedor.nome, sizeof(fornecedor.nome), stdin);
             fornecedor.nome[strcspn(fornecedor.nome, "\n")] = '\0';
 
+            printf("Digite a nova categoria: ");
+            fgets(fornecedor.categoria, sizeof(fornecedor.categoria), stdin);
+            fornecedor.categoria[strcspn(fornecedor.categoria, "\n")] = '\0';
+
             printf("Digite o novo contato: ");
             fgets(fornecedor.contato, sizeof(fornecedor.contato), stdin);
             fornecedor.contato[strcspn(fornecedor.contato, "\n")] = '\0';
@@ -228,6 +253,7 @@ void editarFornecedor()
             printf("ID: %d\n", fornecedor.id);
             printf("CNPJ: %s\n", fornecedor.cnpj);
             printf("Nome: %s\n", fornecedor.nome);
+            printf("Categoria: %s\n", fornecedor.categoria);
             printf("Contato: %s\n", fornecedor.contato);
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
             break;
@@ -271,6 +297,12 @@ void excluirFornecedor()
 
     exibirTitulo("Excluir Fornecedor", 80, ANSI_TEXT_CYAN);
 
+    if (!listarFornecedores()) {
+        printf("\nPressione Enter para voltar ao menu.");
+        getchar();
+        return;
+    }
+
     printf("\nDigite o ID do registro para exclusao: ");
     scanf("%d", &id_busca);
     getchar();
@@ -286,6 +318,7 @@ void excluirFornecedor()
             printf("ID: %d\n", fornecedor.id);
             printf("CNPJ: %s\n", fornecedor.cnpj);
             printf("Nome: %s\n", fornecedor.nome);
+            printf("Categoria: %s\n", fornecedor.categoria);
             printf("Contato: %s\n", fornecedor.contato);
 
             desenharLinha(80, '-', ANSI_TEXT_GREEN);
@@ -329,3 +362,39 @@ void excluirFornecedor()
     printf("\nPressione Enter para voltar ao menu.");
     getchar();
 }
+
+int listarFornecedores() {
+    FILE *arquivo;
+    Fornecedor fornecedor;
+
+    arquivo = fopen("data/fornecedores.bin", "rb");
+    if (arquivo == NULL) {
+        perror("Erro ao abrir o arquivo de fornecedores");
+        return;
+    }
+
+    desenharLinha(80, '=', ANSI_TEXT_GREEN);
+    exibirTitulo("Lista de Fornecedores", 80, ANSI_TEXT_CYAN);
+    desenharLinha(80, '-', ANSI_TEXT_GREEN);
+
+    int encontrouFornecedores = 0;
+
+    while (fread(&fornecedor, sizeof(Fornecedor), 1, arquivo)) {
+        encontrouFornecedores = 1;
+        printf("ID: %d\n", fornecedor.id);
+        printf("CNPJ: %s\n", fornecedor.cnpj);
+        printf("Nome: %s\n", fornecedor.nome);
+        printf("Categoria: %s\n", fornecedor.categoria);
+        printf("Contato: %s\n", fornecedor.contato);
+        desenharLinha(80, '-', ANSI_TEXT_GREEN);
+    }
+
+    if (!encontrouFornecedores) {
+        exibirTitulo("Nenhum fornecedor cadastrado no momento.", 80, ANSI_TEXT_RED);
+    }
+
+    fclose(arquivo);
+
+    return encontrouFornecedores;
+}
+
