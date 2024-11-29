@@ -7,6 +7,36 @@
 #include <cores.h>
 #include <interface.h>
 
+void resetarDadosSistema() {
+    FILE *arquivo;
+
+    arquivo = fopen("data/fornecedores.bin", "wb");
+    if (arquivo == NULL) {
+        perror("Erro ao limpar o arquivo de fornecedores");
+    } else {
+        fclose(arquivo);
+    }
+
+    arquivo = fopen("data/produtos.bin", "wb");
+    if (arquivo == NULL) {
+        perror("Erro ao limpar o arquivo de produtos");
+    } else {
+        fclose(arquivo);
+    }
+
+    arquivo = fopen("data/caixa.bin", "wb");
+    if (arquivo == NULL) {
+        perror("Erro ao limpar o arquivo de fluxo de caixa");
+    } else {
+        fclose(arquivo);
+    }
+
+    printf("\n");
+    exibirTitulo("Todos os dados foram resetados com sucesso!", 80, ANSI_TEXT_GREEN);
+    printf("\nPressione Enter para voltar ao menu.");
+    getchar();
+}
+
 int main()
 {
     int opcaoPrincipal, opcaoProduto, opcaoFornecedor, opcaoFluxoCaixa;
@@ -25,9 +55,10 @@ int main()
             "Cadastro Geral de Produtos",
             "Cadastro Geral de Fornecedores",
             "Fluxo de Caixa",
+            "Resetar Dados do Sistema",
             "Sair"
         };
-        int numOpcoesPrincipal = 4;
+        int numOpcoesPrincipal = 5;
 
         limparTela();
 
@@ -201,15 +232,17 @@ int main()
 
             } while(opcaoFluxoCaixa != 6);
             break;
-
         case 4:
-            printf("Encerrando o sistema... Até mais!\n");
+            resetarDadosSistema();
+            break;
+        case 5:
+            exibirTitulo("Encerrando o sistema... Até mais!", 80, ANSI_TEXT_YELLOW);
             break;
 
         default:
             printf("Opcao invalida! Tente novamente.\n");
         }
-    } while(opcaoPrincipal != 4);
+    } while(opcaoPrincipal != 5);
 
     return 0;
 }
