@@ -38,6 +38,7 @@ O projeto está organizado da seguinte forma:
 - **data/**: Diretório utilizado para armazenar arquivos binários dos registros (`.bin`).
 - **.gitignore**: Arquivo para ignorar arquivos e diretórios desnecessários no repositório.
 - **README.md**: Descrição do projeto e funcionalidades.
+- **sistema-hortifruti.cbp**: Projeto no Code::Blocks pra execução.
 
 ## Tecnologias Utilizadas
 
