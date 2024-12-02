@@ -2,8 +2,8 @@
 #include <string.h>
 #include <autenticacao.h>
 
-#define USUARIO "Rogerio"
-#define SENHA "UNIP"
+#define USUARIO "user"
+#define SENHA "password"
 
 int autenticarUsuario() {
     char senhaDigitada[20], usuarioDigitado[20];
