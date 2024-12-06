@@ -18,6 +18,11 @@ int autenticarUsuario() {
 
         usuarioDigitado[strcspn(usuarioDigitado, "\n")] = '\0';
 
+        if (strcmp(usuarioDigitado, "sair") == 0 || strcmp(usuarioDigitado, "SAIR") == 0) {
+            printf("\nEncerrando o sistema... Até mais!\n");
+            return 0;
+        }
+
         printf("Digite a senha: ");
         fgets(senhaDigitada, sizeof(senhaDigitada), stdin);
 
@@ -27,11 +32,6 @@ int autenticarUsuario() {
         }
 
         senhaDigitada[strcspn(senhaDigitada, "\n")] = '\0';
-
-        if (strcmp(usuarioDigitado, "sair") == 0 || strcmp(usuarioDigitado, "SAIR") == 0) {
-            printf("\nEncerrando o sistema... Até mais!\n");
-            return 0;
-        }
 
         if (strcmp(senhaDigitada, "sair") == 0 || strcmp(senhaDigitada, "SAIR") == 0) {
             printf("\nEncerrando o sistema... Até mais!\n");
